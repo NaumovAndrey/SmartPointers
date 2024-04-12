@@ -40,6 +40,18 @@ public:
 		lovelyToy = new Toy(*other.lovelyToy);
 	}
 
+	Dog& operator = (const Dog& other) //оператор присваивания
+	{
+		if (this == &other) return *this;
+		name = other.name;
+		age = other.age;
+
+		if (lovelyToy != nullptr) delete lovelyToy;
+		lovelyToy = new Toy(*other.lovelyToy);
+
+		return *this;
+	}
+
 	virtual ~Dog()
 	{
 		delete lovelyToy;
