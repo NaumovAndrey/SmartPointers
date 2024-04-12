@@ -4,6 +4,7 @@
 #include "SmartPointers.h"
 #include <iostream>
 #include <string>
+#include <clocale>
 
 using namespace std;
 
@@ -17,18 +18,8 @@ class Toy
 	std::string name;
 };
 
-class Animal
-{
-public:
-	virtual ~Animal()
-	{
-		std::cout << "диструктор: удаление Animal" << std::endl;
-	}
 
-	virtual void voice() = 0;
-};
-
-class Dog : public Animal
+class Dog 
 {
 public:
 	Dog(string _name, std::string toyname, int _age) : name(_name)
@@ -42,9 +33,11 @@ public:
 	Dog(string _name) : Dog(_name, "UnknownToy", 0) {};
 	Dog(int _age) : Dog("Unknown", "UnknownToy", _age) {};
 
-	void voice() override
+	Dog(const Dog& other) //Конструктор копирования
 	{
-		std::cout << "Gaf" << std::endl;
+		name = other.name;
+		age = other.age;
+		lovelyToy = new Toy(*other.lovelyToy);
 	}
 
 	virtual ~Dog()
@@ -61,43 +54,13 @@ private:
 	
 };
 
-class OperaDog : public Dog
-{
-	void voice() override final
-	{
-		std::cout << "Gaaaaaf" << std::endl;
-	}
-};
-
-
-class Wraper
-{
-	public:
-	void func(int i)
-	{
-		std::cout << i << " - Целое число" << endl;
-	}
-
-	void func(string i)
-	{
-		std::cout << i << " - Строка" << endl;
-	}
-};
 
 int main()
 {
 	setlocale(LC_ALL, "rus");
-	//Wraper w;
-	//w.func(10.2);
-	//w.func("Война и Мир");
-
-	/*Dog d("Nala", 2.5);
-	Dog d1("Pushk");
-	Dog d2(11);
-	Dog d3();*/
-
-	Animal* d = new Dog("Sharik", "Ball", 1);
-	delete d;
+	
+	Dog d("drug", "Ball", 1);
+	Dog q(d);
 
 	return 0;
 }
