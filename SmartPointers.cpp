@@ -76,7 +76,7 @@ private:
 	string name;
 	int age;
 	std::shared_ptr<Toy> lovelyToy;
-	std::shared_ptr<Dog> bestie;
+	std::weak_ptr<Dog> bestie;
 };
 
 
@@ -87,17 +87,14 @@ int main()
 	std::shared_ptr<Toy> ball = std::make_shared<Toy>("Boll");
 	std::shared_ptr<Toy> bone = std::make_shared<Toy>("Bone");
 
-	Dog a("Шарик", ball, 1);
-	Dog b("Дружок", ball, 2);
-	Dog c("Пушок", ball, 8);
-	Dog d("Ваня", bone, 3);
-	Dog e("Петя", bone, 4);
+	std::shared_ptr<Dog> a = std::make_shared<Dog>("Шарик", ball, 1);
+	std::shared_ptr<Dog> b = std::make_shared<Dog>("Дружок", ball, 2);
+	std::shared_ptr<Dog> c = std::make_shared<Dog>("Пушок", ball, 8);
+	
+	a->setBestie(b);
+	b->setBestie(c);
 
-	e.copyLovelyToy(c);
-	Toy* f = bone.get();
-	d.copyLovelyToy(c);
-
-	ball.reset(); //
+	ball.reset(); 
 	bone.reset();
 
 	return 0;
