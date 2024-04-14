@@ -14,6 +14,16 @@ class Toy
 	Toy(std::string _name) : name(_name) {};
 	Toy() : name("SomeToy") {};
 
+	std::string getName()
+	{
+		return name;
+	}
+
+	~Toy()
+	{
+		std::cout << "игрушка " << name << " удалена " << std::endl;
+	}
+
 	private:
 	std::string name;
 };
@@ -71,6 +81,30 @@ public:
 	{
 		bestie = _bestie;
 	}
+
+	void getToy(shared_ptr<Toy> toy)
+	{
+		if(lovelyToy == toy) {
+			std::cout << "I already have this toy." << std::endl; 
+		} else if(toy.use_count() > 1){
+			std::cout << "Another dog is playing with this toy." << std::endl;
+		} else {
+			lovelyToy = toy;
+			std::cout << "Got a new toy: " << toy->getName() << std::endl;
+		}
+
+
+	}
+
+	void dropToy()
+	{
+		if(lovelyToy == nullptr) {
+			std::cout << "Nothing to drop." << std::endl;
+		} else {
+			std::cout << "Dropping toy: " << lovelyToy->getName() << std::endl;
+			lovelyToy = nullptr;
+		}
+	}
 	
 private:
 	string name;
@@ -84,18 +118,19 @@ int main()
 {
 	setlocale(LC_ALL, "rus");
 	
-	std::shared_ptr<Toy> ball = std::make_shared<Toy>("Boll");
+	std::shared_ptr<Toy> ball = std::make_shared<Toy>("Ball");
 	std::shared_ptr<Toy> bone = std::make_shared<Toy>("Bone");
 
-	std::shared_ptr<Dog> a = std::make_shared<Dog>("Шарик", ball, 1);
-	std::shared_ptr<Dog> b = std::make_shared<Dog>("Дружок", ball, 2);
-	std::shared_ptr<Dog> c = std::make_shared<Dog>("Пушок", ball, 8);
-	
-	a->setBestie(b);
-	b->setBestie(c);
+	Dog dog1;
+	Dog dog2;
 
-	ball.reset(); 
-	bone.reset();
+	dog1.getToy(ball);
+	dog2.getToy(bone);
+
+	dog1.getToy(bone);
+
+	dog1.dropToy();
+
 
 	return 0;
 }
