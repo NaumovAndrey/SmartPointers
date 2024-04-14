@@ -40,7 +40,7 @@ public:
 
 	smart_ptr_toy& operator = (const smart_ptr_toy& oth) //оператор присванивания
 	{
-		if(this = &oth) return *this;
+		if(this == &oth) return *this;
 		if(obj != nullptr) delete obj;
 		obj = new Toy(*oth.obj);
 
@@ -53,29 +53,52 @@ public:
 class Dog 
 {
 public:
-	Dog(string _name, std::string toyname, int _age) : name(_name), lovelyToy(toyname)
+	Dog(string _name, std::shared_ptr<Toy> toy, int _age) : name(_name), lovelyToy(toy)
 	{
 		if (_age >= 0 && _age < 30) age = _age;
 	}
 
-	Dog() : Dog("Unknown", "UnknownToy", 0) {};
-	Dog(string _name) : Dog(_name, "UnknownToy", 0) {};
-	Dog(int _age) : Dog("Unknown", "UnknownToy", _age) {};
+	Dog() : Dog("Unknown", std::make_shared<Toy>("UnknownToy"), 0) {};
+	Dog(string _name) : Dog(_name, std::make_shared<Toy>("UnknownToy"), 0) {};
+	Dog(int _age) : Dog("Unknown", std::make_shared<Toy>("UnknownToy"), _age) {};
 
+	void copyLovelyToy(const Dog& oth)
+	{
+		lovelyToy = oth.lovelyToy;
+	}
+
+	void setBestie(std::shared_ptr<Dog> _bestie)
+	{
+		bestie = _bestie;
+	}
 	
 private:
 	string name;
 	int age;
-	smart_ptr_toy lovelyToy;
+	std::shared_ptr<Toy> lovelyToy;
+	std::shared_ptr<Dog> bestie;
 };
 
-void foo(std::unique_ptr<Dog> d) {};
 
 int main()
 {
 	setlocale(LC_ALL, "rus");
 	
-	std::unique_ptr<Dog> d = std::make_unique<Dog>("Шарик", "Мяч", 1); //один динамический объект - один владелец
+	std::shared_ptr<Toy> ball = std::make_shared<Toy>("Boll");
+	std::shared_ptr<Toy> bone = std::make_shared<Toy>("Bone");
+
+	Dog a("Шарик", ball, 1);
+	Dog b("Дружок", ball, 2);
+	Dog c("Пушок", ball, 8);
+	Dog d("Ваня", bone, 3);
+	Dog e("Петя", bone, 4);
+
+	e.copyLovelyToy(c);
+	Toy* f = bone.get();
+	d.copyLovelyToy(c);
+
+	ball.reset(); //
+	bone.reset();
 
 	return 0;
 }
